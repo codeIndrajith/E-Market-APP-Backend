@@ -57,4 +57,30 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { registerUser };
+// @desc    Auth user/set token
+// routes   POST /api/users/auth
+// @access  Public
+const authUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  const emailValidation = validateEmail(email);
+  if (!emailValidation) {
+    res.status(400);
+    throw new Error('Email should valid');
+  }
+
+  const user = await User.findOne({ userEmail: email });
+
+  if (user && (await user.matchPassword(password))) {
+    const token = generateToken(res, user._id);
+    res.status(201).json({
+      accessToken: token,
+      _id: user._id,
+    });
+  } else {
+    res.status(401);
+    throw new Error('Invalid email or password');
+  }
+});
+
+module.exports = { registerUser, authUser };
