@@ -75,10 +75,9 @@ const authUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ userEmail: email });
 
   if (user && (await user.matchPassword(password))) {
-    await TokenBlacklistModel.deleteMany();
-    const token = generateToken(res, user._id);
+    const newToken = generateToken(res, user._id);
     res.status(201).json({
-      accessToken: token,
+      accessToken: newToken,
       _id: user._id,
     });
   } else {
@@ -93,12 +92,17 @@ const authUser = asyncHandler(async (req, res) => {
 const logoutUser = asyncHandler(async (req, res) => {
   const authHeader = req.headers['authorization'];
   const accessToken = authHeader && authHeader.split(' ')[1];
+  const decoded = jwt.decode(accessToken, { complete: true });
+  decoded.payload.exp = 0;
 
   if (!accessToken) {
     res.status(400);
     throw new Error('Token is required');
   } else {
-    await TokenBlacklistModel.create({ token: accessToken });
+    await TokenBlacklistModel.create({
+      token: accessToken,
+      userId: decoded.payload.userId,
+    });
     res.status(201).json({ message: 'User logout successful' });
   }
 });
@@ -107,7 +111,47 @@ const logoutUser = asyncHandler(async (req, res) => {
 // routes   GET /api/users/profile
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
-  res.send(req.user);
+  const user = {
+    _id: req.user._id,
+    userName: req.user.firstName + ' ' + req.user.lastName,
+    userEmail: req.user.userEmail,
+  };
+  res.status(200).json(user);
 });
 
-module.exports = { registerUser, authUser, logoutUser, getUserProfile };
+// @desc    Update user profile
+// routes   PUT /api/users/profile
+// @access  Private
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    user.firstName = req.body.firstName || user.firstName;
+    user.lastName = req.body.lastName || user.lastName;
+    user.userEmail = req.body.userEmail || user.userEmail;
+    user.contactNumber = req.body.contactNumber || user.contactNumber;
+    user.city = req.body.city || user.city;
+
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+
+    const updatedUser = await user.save();
+    res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.firstName + ' ' + updatedUser.lastName,
+      userEmail: updatedUser.userEmail,
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
+module.exports = {
+  registerUser,
+  authUser,
+  logoutUser,
+  getUserProfile,
+  updateUserProfile,
+};

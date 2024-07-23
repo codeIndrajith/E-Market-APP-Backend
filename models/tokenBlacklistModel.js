@@ -6,6 +6,13 @@ const tokenBlacklistModelSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    newToken: {
+      type: String,
+    },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,
