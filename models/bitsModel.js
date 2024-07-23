@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('./userModel');
 
 const bitsSchema = mongoose.Schema(
   {
@@ -18,6 +19,15 @@ const bitsSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+bitsSchema.post('save', async function (doc, next) {
+  try {
+    await User.findByIdAndUpdate(doc.bitUser, { $inc: { bitCount: 1 } });
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 const Bit = mongoose.model('Bit', bitsSchema);
 module.exports = Bit;

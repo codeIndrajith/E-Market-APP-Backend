@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const Product = require('../models/productModel');
 const Bit = require('../models/bitsModel');
 const jwt = require('jsonwebtoken');
+const User = require('../models/userModel');
 
 // @desc    Get all product
 // routes   GET /api/products
@@ -37,29 +38,7 @@ const getProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Bit product by User
-// routes   POST /api/products/bits/:productId
-// @access  Private
-const bitProductByUser = asyncHandler(async (req, res) => {
-  const { bitAmount } = req.body;
-  const { productId } = req.params;
-  const authHeader = req.headers['authorization'];
-  const accessToken = authHeader && authHeader.split(' ')[1];
-  const decode = jwt.decode(accessToken);
-
-  if (bitAmount > 30030) {
-    res.status(400);
-    throw new Error('Bit amount need to be less than RS.30030.00');
-  } else {
-    const addedBitAmount = await Bit.create({
-      bitAmount,
-      bitProduct: productId,
-      bitUser: decode.userId,
-    });
-    res
-      .status(201)
-      .json({ message: 'Product bit add successful', bit: addedBitAmount });
-  }
-});
-
-module.exports = { getAllProducts, getProduct, bitProductByUser };
+module.exports = {
+  getAllProducts,
+  getProduct,
+};
