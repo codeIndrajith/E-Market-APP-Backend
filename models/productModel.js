@@ -41,7 +41,6 @@ const productSchema = mongoose.Schema(
     },
     startBitPrice: {
       type: Number,
-      required: true,
     },
   },
   {

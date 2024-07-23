@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const userRoutes = require('./routes/userRoutes');
+const productRoutes = require('./routes/productRoutes');
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 const connectDB = require('./config/database');
@@ -16,6 +17,7 @@ connectDB();
 
 // user routes
 app.use('/api/users', userRoutes);
+app.use('/api/products', productRoutes);
 
 app.use('/', (req, res) => {
   res.send('Server is running');
