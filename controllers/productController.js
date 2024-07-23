@@ -4,6 +4,38 @@ const Bit = require('../models/bitsModel');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 
+// @desc    Add product
+// routes   POST /api/products
+// @access  Private
+const addProduct = asyncHandler(async (req, res) => {
+  const {
+    productImage,
+    category,
+    productName,
+    amount,
+    startDate,
+    endDate,
+    location,
+    startBitPrice,
+  } = req.body;
+  const addedProduct = await Product.create({
+    productImage,
+    category,
+    productName,
+    amount,
+    startDate,
+    endDate,
+    location,
+    startBitPrice,
+  });
+  if (addedProduct) {
+    res.status(200).json({ message: 'Product add successful' });
+  } else {
+    res.status(500);
+    throw new Error('Product add fail');
+  }
+});
+
 // @desc    Get all product
 // routes   GET /api/products
 // @access  Public
@@ -41,4 +73,5 @@ const getProduct = asyncHandler(async (req, res) => {
 module.exports = {
   getAllProducts,
   getProduct,
+  addProduct,
 };

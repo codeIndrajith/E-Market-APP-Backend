@@ -1,9 +1,10 @@
 const Bit = require('../models/bitsModel');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
+const jwt = require('jsonwebtoken');
 
 // @desc    Bit product by User
-// routes   POST /api/:productId
+// routes   POST /api/bits/:productId
 // @access  Private
 const bitProductByUser = asyncHandler(async (req, res) => {
   const { bitAmount } = req.body;
@@ -31,9 +32,9 @@ const bitProductByUser = asyncHandler(async (req, res) => {
 // routes   GET /api/bits
 // @access  Public
 const getAllBits = asyncHandler(async (req, res) => {
-  const bits = await Bit.find();
+  const bits = await Bit.find({});
   if (bits && bits.length > 0) {
-    res.status(201).json(bits.amount);
+    res.status(201).json({ bits });
   } else {
     res.status(404);
     throw new Error('Bits not found');
@@ -45,7 +46,7 @@ const getAllBits = asyncHandler(async (req, res) => {
 // @access  Public
 const getBitProductByUser = asyncHandler(async (req, res) => {
   const { productId } = req.params;
-  const bits = await Bit.findById({ bitProduct: productId });
+  const bits = await Bit.find({ bitProduct: productId });
   let bitUserId = [];
   let users = [];
 
