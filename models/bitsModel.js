@@ -4,7 +4,7 @@ const User = require('./userModel');
 const bitsSchema = mongoose.Schema(
   {
     bitAmount: {
-      type: String,
+      type: Number,
     },
     bitProduct: {
       type: mongoose.Schema.Types.ObjectId,

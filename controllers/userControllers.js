@@ -5,6 +5,8 @@ const generateToken = require('../utils/generateToken');
 const jwt = require('jsonwebtoken');
 const { protect } = require('../middleware/authMiddleware');
 const TokenBlacklistModel = require('../models/tokenBlacklistModel');
+const Bit = require('../models/bitsModel');
+const quickSort = require('../sort/quickSort');
 
 // @desc    Register a new user
 // routes   POST /api/users
@@ -153,19 +155,24 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 // @access  Public
 const getBitProductUsers = asyncHandler(async (req, res) => {
   const { productId } = req.params;
+  let allBitAmounts = [];
   const users = await User.find({
     bitProducts: productId,
   });
-  const bitUsersDetail = users.map(({ firstName, lastName, profileImage }) => ({
-    firstName,
-    lastName,
-    profileImage,
-  }));
+  if (users) {
+    for (const user of users) {
+      const bitAmounts = await Bit.find({ bitUser: user._id });
+      allBitAmounts.push(...bitAmounts);
+    }
+  }
+  const bitAmounts = allBitAmounts.map(({ bitAmount }) => bitAmount);
+
+  const sortAmount = quickSort(bitAmounts);
+
+  console.log(sortAmount);
 
   if (users) {
-    res.status(201).json({
-      bitUsersDetail,
-    });
+    res.status(201).json({ message: 'ok' });
   } else {
     res.status(404);
     throw new Error('Bit users not found');
