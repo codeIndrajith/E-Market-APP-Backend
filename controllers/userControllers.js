@@ -5,6 +5,7 @@ const generateToken = require('../utils/generateToken');
 const jwt = require('jsonwebtoken');
 const { protect } = require('../middleware/authMiddleware');
 const TokenBlacklistModel = require('../models/tokenBlacklistModel');
+const Product = require('../models/productModel');
 
 // @desc    Register a new user
 // routes   POST /api/users
@@ -111,12 +112,17 @@ const logoutUser = asyncHandler(async (req, res) => {
 // routes   GET /api/users/profile
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
-  const user = {
-    _id: req.user._id,
-    userName: req.user.firstName + ' ' + req.user.lastName,
-    userEmail: req.user.userEmail,
-  };
-  res.status(200).json(user);
+  const authHeader = req.headers['authorization'];
+  const accessToken = authHeader && authHeader.split(' ')[1];
+  const decode = jwt.decode(accessToken);
+  const addProduct = await Product.find({ user: decode.userId });
+
+  if (addProduct && addProduct.length > 0) {
+    res.status(200).json(addProduct);
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
+  }
 });
 
 // @desc    Update user profile

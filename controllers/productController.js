@@ -41,6 +41,7 @@ const addProduct = asyncHandler(async (req, res) => {
     location,
     startBitPrice,
     seller,
+    user: decode.userId,
   });
   if (addedProduct) {
     res.status(200).json({ message: 'Product add successful' });
