@@ -153,10 +153,19 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 // @access  Public
 const getBitProductUsers = asyncHandler(async (req, res) => {
   const { productId } = req.params;
-  const users = await User.find({ bitProducts: productId });
+  const users = await User.find({
+    bitProducts: productId,
+  });
+  const bitUsersDetail = users.map(({ firstName, lastName, profileImage }) => ({
+    firstName,
+    lastName,
+    profileImage,
+  }));
 
   if (users) {
-    res.status(201).json({ bitUsers: users });
+    res.status(201).json({
+      bitUsersDetail,
+    });
   } else {
     res.status(404);
     throw new Error('Bit users not found');
