@@ -85,8 +85,50 @@ const getProduct = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get Product Profile
+// routes   GET /api/products/productProfile
+// @access  Private
+const getProductProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+  const addProduct = await Product.find({ user: user._id });
+
+  if (addProduct && addProduct.length > 0) {
+    res.status(200).json(addProduct);
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+});
+
+// @desc    Update Product Profile
+// routes   PUT /api/products/:productId
+// @access  Private
+const updateProductProfile = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+  const product = await Product.findById(productId);
+
+  if (product) {
+    product.productImage = req.body.productImage || product.productImage;
+    product.category = req.body.category || product.category;
+    product.productName = req.body.productName || product.productName;
+    product.amount = req.body.amount || product.amount;
+    product.startDate = req.body.startDate || product.startDate;
+    product.endDate = req.body.endDate || product.endDate;
+    product.location = req.body.location || product.location;
+    product.startBitPrice = req.body.startBitPrice || product.startBitPrice;
+
+    const updatedProduct = await product.save();
+    res.status(200).json({ message: 'Product Updated' });
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+});
+
 module.exports = {
   getAllProducts,
   getProduct,
   addProduct,
+  getProductProfile,
+  updateProductProfile,
 };
