@@ -148,10 +148,26 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get users to bit single product
+// routes   GET /api/users/:productId
+// @access  Public
+const getBitProductUsers = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+  const users = await User.find({ bitProducts: productId });
+
+  if (users) {
+    res.status(201).json({ bitUsers: users });
+  } else {
+    res.status(404);
+    throw new Error('Bit users not found');
+  }
+});
+
 module.exports = {
   registerUser,
   authUser,
   logoutUser,
   getUserProfile,
   updateUserProfile,
+  getBitProductUsers,
 };

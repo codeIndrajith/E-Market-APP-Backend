@@ -42,6 +42,19 @@ const productSchema = mongoose.Schema(
     startBitPrice: {
       type: Number,
     },
+    seller: [
+      {
+        name: {
+          type: String,
+        },
+        contactNumber: {
+          type: String,
+        },
+        location: {
+          type: String,
+        },
+      },
+    ],
   },
   {
     timestamps: true,

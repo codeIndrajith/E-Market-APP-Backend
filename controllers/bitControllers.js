@@ -41,28 +41,18 @@ const getAllBits = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Get bits product by user & GET all bits in single product
+// @desc    Get bits single product
 // routes   GET /api/bits/:productId
 // @access  Public
-const getBitProductByUser = asyncHandler(async (req, res) => {
+const getBitProduct = asyncHandler(async (req, res) => {
   const { productId } = req.params;
-  const bits = await Bit.find({ bitProduct: productId });
-  let bitUserId = [];
-  let users = [];
-
-  if (bits) {
-    bitUserId = bits.map((element) => element.bitUser);
-    for (const userId of bitUserId) {
-      const user = await User.findById(userId);
-      if (user) {
-        users.push(user);
-      }
-    }
-    res.status(201).json({ bitUsers: users, bitProduct: bits });
+  const bitProduct = await Bit.find({ bitProduct: productId });
+  if (bitProduct) {
+    res.status(200).json(bitProduct);
   } else {
     res.status(404);
-    throw new Error('Bit users not found');
+    throw new Error('Bit product not found');
   }
 });
 
-module.exports = { bitProductByUser, getAllBits, getBitProductByUser };
+module.exports = { bitProductByUser, getAllBits, getBitProduct };

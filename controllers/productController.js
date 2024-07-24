@@ -8,6 +8,19 @@ const User = require('../models/userModel');
 // routes   POST /api/products
 // @access  Private
 const addProduct = asyncHandler(async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const accessToken = authHeader && authHeader.split(' ')[1];
+  const decode = jwt.decode(accessToken);
+  const sellerDetails = await User.findById({ _id: decode.userId });
+  let seller;
+  if (sellerDetails) {
+    const { firstName, lastName, contactNumber, city } = sellerDetails;
+    seller = {
+      name: `${firstName} ${lastName}`,
+      contactNumber,
+      location: city,
+    };
+  }
   const {
     productImage,
     category,
@@ -27,6 +40,7 @@ const addProduct = asyncHandler(async (req, res) => {
     endDate,
     location,
     startBitPrice,
+    seller,
   });
   if (addedProduct) {
     res.status(200).json({ message: 'Product add successful' });
@@ -50,7 +64,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Get Single product
+// @desc    Get Single product & Seller details
 // routes   GET /api/products/:productId
 // @access  Public
 const getProduct = asyncHandler(async (req, res) => {

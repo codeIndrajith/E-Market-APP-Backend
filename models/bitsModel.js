@@ -22,7 +22,10 @@ const bitsSchema = mongoose.Schema(
 
 bitsSchema.post('save', async function (doc, next) {
   try {
-    await User.findByIdAndUpdate(doc.bitUser, { $inc: { bitCount: 1 } });
+    await User.findByIdAndUpdate(doc.bitUser, {
+      $inc: { bitCount: 1 },
+      $push: { bitProducts: doc.bitProduct },
+    });
     next();
   } catch (error) {
     next(error);
