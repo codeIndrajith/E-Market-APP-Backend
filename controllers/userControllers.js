@@ -19,6 +19,7 @@ const registerUser = asyncHandler(async (req, res) => {
     contactNumber,
     city,
     password,
+    profileImage,
     confirmPassword,
   } = req.body;
 
@@ -47,6 +48,7 @@ const registerUser = asyncHandler(async (req, res) => {
     contactNumber,
     city,
     password,
+    profileImage,
   });
   if (user) {
     const token = generateToken(res, user._id);
