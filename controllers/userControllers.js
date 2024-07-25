@@ -166,7 +166,6 @@ const getBitProductUsers = asyncHandler(async (req, res) => {
     }
   }
   const bitAmounts = allBitAmounts.map(({ bitAmount }) => bitAmount);
-
   const sortAmount = quickSort(bitAmounts);
 
   console.log(sortAmount);

@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const bitRoutes = require('./routes/bitRoutes');
@@ -9,6 +10,7 @@ const connectDB = require('./config/database');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
