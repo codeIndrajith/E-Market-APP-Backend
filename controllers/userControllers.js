@@ -168,10 +168,12 @@ const getBitProductUsers = asyncHandler(async (req, res) => {
   const bitAmounts = allBitAmounts.map(({ bitAmount }) => bitAmount);
   const sortAmount = quickSort(bitAmounts);
 
-  console.log(sortAmount);
+  const sortedBitAmounts = sortAmount.map((amount) =>
+    allBitAmounts.find((item) => item.bitAmount === amount)
+  );
 
   if (users) {
-    res.status(201).json({ message: 'ok' });
+    res.status(201).json(sortedBitAmounts);
   } else {
     res.status(404);
     throw new Error('Bit users not found');

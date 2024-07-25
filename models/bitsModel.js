@@ -14,6 +14,12 @@ const bitsSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
+    bitUsername: {
+      type: String,
+    },
+    bitUserprofileImage: {
+      type: String,
+    },
   },
   {
     timestamps: true,

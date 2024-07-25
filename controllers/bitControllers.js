@@ -9,9 +9,6 @@ const jwt = require('jsonwebtoken');
 const bitProductByUser = asyncHandler(async (req, res) => {
   const { bitAmount } = req.body;
   const { productId } = req.params;
-  const authHeader = req.headers['authorization'];
-  const accessToken = authHeader && authHeader.split(' ')[1];
-  const decode = jwt.decode(accessToken);
 
   if (bitAmount > 30030) {
     res.status(400);
@@ -20,7 +17,9 @@ const bitProductByUser = asyncHandler(async (req, res) => {
     const addedBitAmount = await Bit.create({
       bitAmount,
       bitProduct: productId,
-      bitUser: decode.userId,
+      bitUser: req.user._id,
+      bitUsername: req.user.firstName + ' ' + req.user.lastName,
+      bitUserprofileImage: req.user.profileImage,
     });
     res
       .status(201)
