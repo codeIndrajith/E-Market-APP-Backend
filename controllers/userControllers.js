@@ -53,10 +53,13 @@ const registerUser = asyncHandler(async (req, res) => {
   if (user) {
     const token = generateToken(res, user._id);
     res.status(201).json({
+      status: 'Success',
       accessToken: token,
-      _id: user._id,
-      userName: firstName + ' ' + lastName,
-      userEmail: user.userEmail,
+      statusCode: res.statusCode,
+      data: {
+        userId: user._id,
+        userEmail: user.userEmail,
+      },
     });
   } else {
     res.status(400);
@@ -81,8 +84,13 @@ const authUser = asyncHandler(async (req, res) => {
   if (user && (await user.matchPassword(password))) {
     const newToken = generateToken(res, user._id);
     res.status(201).json({
+      status: 'Success',
+      statusCode: res.statusCode,
       accessToken: newToken,
-      _id: user._id,
+      data: {
+        userId: user._id,
+        userEmail: user.userEmail,
+      },
     });
   } else {
     res.status(401);
@@ -97,7 +105,6 @@ const logoutUser = asyncHandler(async (req, res) => {
   const authHeader = req.headers['authorization'];
   const accessToken = authHeader && authHeader.split(' ')[1];
   const decoded = jwt.decode(accessToken, { complete: true });
-  decoded.payload.exp = 0;
 
   if (!accessToken) {
     res.status(400);
@@ -105,9 +112,11 @@ const logoutUser = asyncHandler(async (req, res) => {
   } else {
     await TokenBlacklistModel.create({
       token: accessToken,
-      userId: decoded.payload.userId,
+      userId: decoded.userId,
     });
-    res.status(201).json({ message: 'User logout successful' });
+    res
+      .status(201)
+      .json({ status: 'Success', message: 'User logout successful' });
   }
 });
 
@@ -115,12 +124,14 @@ const logoutUser = asyncHandler(async (req, res) => {
 // routes   GET /api/users/profile
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
-  const user = {
-    _id: req.user._id,
-    userName: req.user.firstName + ' ' + req.user.lastName,
-    userEmail: req.user.userEmail,
-  };
-  res.status(200).json(user);
+  res.status(200).json({
+    statusCode: res.statusCode,
+    data: {
+      userId: req.user._id,
+      userName: req.user.firstName + ' ' + req.user.lastName,
+      userEmail: req.user.userEmail,
+    },
+  });
 });
 
 // @desc    Update user profile
@@ -140,11 +151,11 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       user.password = req.body.password;
     }
 
-    const updatedUser = await user.save();
+    await user.save();
     res.status(200).json({
-      _id: updatedUser._id,
-      name: updatedUser.firstName + ' ' + updatedUser.lastName,
-      userEmail: updatedUser.userEmail,
+      statusCode: res.statusCode,
+      status: 'Success',
+      message: 'User Update Successful',
     });
   } else {
     res.status(404);
@@ -175,7 +186,10 @@ const getBitProductUsers = asyncHandler(async (req, res) => {
   );
 
   if (users) {
-    res.status(201).json(sortedBitAmounts);
+    res.status(201).json({
+      status: 'Success',
+      data: sortedBitAmounts,
+    });
   } else {
     res.status(404);
     throw new Error('Bit users not found');

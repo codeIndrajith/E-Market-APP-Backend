@@ -8,10 +8,7 @@ const User = require('../models/userModel');
 // routes   POST /api/products
 // @access  Private
 const addProduct = asyncHandler(async (req, res) => {
-  const authHeader = req.headers['authorization'];
-  const accessToken = authHeader && authHeader.split(' ')[1];
-  const decode = jwt.decode(accessToken);
-  const sellerDetails = await User.findById({ _id: decode.userId });
+  const sellerDetails = await User.findById({ _id: req.user._id });
   let seller;
   if (sellerDetails) {
     const { firstName, lastName, contactNumber, city } = sellerDetails;
@@ -41,10 +38,14 @@ const addProduct = asyncHandler(async (req, res) => {
     location,
     startBitPrice,
     seller,
-    user: decode.userId,
+    user: req.user._id,
   });
   if (addedProduct) {
-    res.status(200).json({ message: 'Product add successful' });
+    res.status(200).json({
+      statusCode: res.statusCode,
+      status: 'Success',
+      message: 'Product add successful',
+    });
   } else {
     res.status(500);
     throw new Error('Product add fail');
@@ -58,7 +59,18 @@ const getAllProducts = asyncHandler(async (req, res) => {
   const products = await Product.find();
 
   if (products && products.length > 0) {
-    res.status(200).json({ products });
+    res.status(200).json({
+      status: 'Success',
+      data: products.map((product) => ({
+        productId: product._id,
+        productName: product.productName,
+        productImage: product.productImage,
+        category: product.category,
+        amount: product.amount,
+        startDate: product.startDate,
+        endDate: product.endDate,
+      })),
+    });
   } else {
     res.status(404);
     throw new Error('Products is not available');
@@ -74,7 +86,26 @@ const getProduct = asyncHandler(async (req, res) => {
   if (productId) {
     const product = await Product.findById({ _id: productId });
     if (product) {
-      res.status(201).json({ product });
+      res.status(201).json({
+        status: 'Success',
+        data: {
+          ProductDetails: [
+            {
+              productName: product.productName,
+              location: product.location,
+              startDate: product.startDate,
+              endDate: product.endDate,
+            },
+          ],
+          SellerDetails: [
+            {
+              sellerName: product.seller[0].name,
+              sellerContactNumber: product.seller[0].contactNumber,
+              sellerLocation: product.seller[0].location,
+            },
+          ],
+        },
+      });
     } else {
       res.status(404);
       throw new Error('Product is not available');
@@ -93,7 +124,7 @@ const getProductProfile = asyncHandler(async (req, res) => {
   const addProduct = await Product.find({ user: user._id });
 
   if (addProduct && addProduct.length > 0) {
-    res.status(200).json(addProduct);
+    res.status(200).json({ status: 'Success', data: addProduct });
   } else {
     res.status(404);
     throw new Error('Product not found');
@@ -117,8 +148,8 @@ const updateProductProfile = asyncHandler(async (req, res) => {
     product.location = req.body.location || product.location;
     product.startBitPrice = req.body.startBitPrice || product.startBitPrice;
 
-    const updatedProduct = await product.save();
-    res.status(200).json({ message: 'Product Updated' });
+    await product.save();
+    res.status(200).json({ status: 'Success', message: 'Product Updated' });
   } else {
     res.status(404);
     throw new Error('Product not found');
