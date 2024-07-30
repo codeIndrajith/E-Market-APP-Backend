@@ -2,6 +2,7 @@ const Bit = require('../models/bitsModel');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
+const Product = require('../models/productModel');
 
 // @desc    Bit product by User
 // routes   POST /api/bits/:productId
@@ -54,4 +55,42 @@ const getBitProduct = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { bitProductByUser, getAllBits, getBitProduct };
+// @desc    Get user bits
+// routes   GET /api/bits/user-bits
+// @access  Private
+const userBitProducts = asyncHandler(async (req, res) => {
+  const userBitProducts = await Bit.find({ bitUser: req.user._id });
+  const products = [];
+
+  for (const product of userBitProducts) {
+    const foundProduct = await Product.findById({ _id: product.bitProduct });
+    if (foundProduct) {
+      products.push({
+        productId: foundProduct._id,
+        productName: foundProduct.productName,
+        image: foundProduct.productImage,
+        amount: foundProduct.amount,
+        startDate: foundProduct.startDate,
+        endDate: foundProduct.endDate,
+      });
+    }
+  }
+
+  if (products.length > 0) {
+    res.status(200).json({
+      status: 'Success',
+      statusCode: res.statusCode,
+      data: products,
+    });
+  } else {
+    res.status(404);
+    throw new Error('User bit products have not been found');
+  }
+});
+
+module.exports = {
+  bitProductByUser,
+  getAllBits,
+  getBitProduct,
+  userBitProducts,
+};
