@@ -167,31 +167,35 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 // @access  Public
 const getBitProductUsers = asyncHandler(async (req, res) => {
   const { productId } = req.params;
-  let allBitAmounts = [];
-  const users = await User.find({
-    bitProducts: productId,
-  });
-  if (users) {
-    for (const user of users) {
-      const bitAmounts = await Bit.find({ bitUser: user._id });
-      allBitAmounts.push(...bitAmounts);
-    }
-  }
-  const bitAmounts = allBitAmounts.map(({ bitAmount }) => bitAmount);
-  const sortAmount = quickSort(bitAmounts);
+  let allBidAmounts = [];
 
-  const sortedBitAmounts = sortAmount.map((amount) =>
-    allBitAmounts.find((item) => item.bitAmount === amount)
+  const bitProduct = await Bit.find({ bitProduct: productId });
+  if (bitProduct && bitProduct.length > 0) {
+    bitProduct.map((bidProd) => allBidAmounts.push(bidProd.bitAmount));
+  }
+  const sortAmount = quickSort(allBidAmounts);
+
+  const sortedList = sortAmount.map((amount) =>
+    bitProduct.find((item) => item.bitAmount === amount)
   );
 
-  if (users) {
+  if (sortedList) {
     res.status(201).json({
       status: 'Success',
-      data: sortedBitAmounts,
+      data: [
+        {
+          sortedListDetails: sortedList.map((list) => ({
+            bidId: list._id,
+            bidAmount: list.bitAmount,
+            bidUser: list.bitUser,
+            profileImage: list.bitUserprofileImage,
+          })),
+        },
+      ],
     });
   } else {
     res.status(404);
-    throw new Error('Bit users not found');
+    throw new Error('Bid users not found');
   }
 });
 

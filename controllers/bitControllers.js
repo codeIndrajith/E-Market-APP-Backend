@@ -22,9 +22,11 @@ const bitProductByUser = asyncHandler(async (req, res) => {
       bitUsername: req.user.firstName + ' ' + req.user.lastName,
       bitUserprofileImage: req.user.profileImage,
     });
-    res
-      .status(201)
-      .json({ message: 'Product bit add successful', bit: addedBitAmount });
+    res.status(201).json({
+      status: 'Success',
+      statusCode: res.statusCode,
+      message: 'Product bit add successful',
+    });
   }
 });
 
@@ -34,21 +36,35 @@ const bitProductByUser = asyncHandler(async (req, res) => {
 const getAllBits = asyncHandler(async (req, res) => {
   const bits = await Bit.find({});
   if (bits && bits.length > 0) {
-    res.status(201).json({ bits });
+    res.status(201).json({
+      status: 'Success',
+      data: bits,
+    });
   } else {
     res.status(404);
     throw new Error('Bits not found');
   }
 });
 
-// @desc    Get bits single product
+// @desc    Get All Bids single Product
 // routes   GET /api/bits/:productId
 // @access  Public
 const getBitProduct = asyncHandler(async (req, res) => {
   const { productId } = req.params;
   const bitProduct = await Bit.find({ bitProduct: productId });
-  if (bitProduct) {
-    res.status(200).json(bitProduct);
+  if (bitProduct && bitProduct.length > 0) {
+    res.status(200).json({
+      status: 'Success',
+      statusCode: res.statusCode,
+      data: [
+        {
+          bidDetails: bitProduct.map((bitProd) => ({
+            bidId: bitProd._id,
+            bitAmount: bitProd.bitAmount,
+          })),
+        },
+      ],
+    });
   } else {
     res.status(404);
     throw new Error('Bit product not found');
@@ -88,7 +104,7 @@ const userBitProducts = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Update Bid
+// @desc    Update user Bid
 // routes   PUT /api/bits/:productId
 // @access  Private
 const updateBit = asyncHandler(async (req, res) => {
@@ -111,7 +127,7 @@ const updateBit = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Delete Bid
+// @desc    Delete user Bid
 // routes   DELETE /api/bits/:productId
 // @access  Private
 const deleteBid = asyncHandler(async (req, res) => {

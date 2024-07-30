@@ -61,15 +61,19 @@ const getAllProducts = asyncHandler(async (req, res) => {
   if (products && products.length > 0) {
     res.status(200).json({
       status: 'Success',
-      data: products.map((product) => ({
-        productId: product._id,
-        productName: product.productName,
-        productImage: product.productImage,
-        category: product.category,
-        amount: product.amount,
-        startDate: product.startDate,
-        endDate: product.endDate,
-      })),
+      data: [
+        {
+          AllProducts: products.map((product) => ({
+            productId: product._id,
+            productName: product.productName,
+            productImage: product.productImage,
+            category: product.category,
+            amount: product.amount,
+            startDate: product.startDate,
+            endDate: product.endDate,
+          })),
+        },
+      ],
     });
   } else {
     res.status(404);
@@ -86,14 +90,18 @@ const getUserProduct = asyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'Success',
       statusCode: res.statusCode,
-      data: userProduct.map((product) => ({
-        productId: product._id,
-        productName: product.productName,
-        image: product.productImage,
-        amount: product.amount,
-        startDate: product.startDate,
-        endDate: product.endDate,
-      })),
+      data: [
+        {
+          myProducts: userProduct.map((product) => ({
+            productId: product._id,
+            productName: product.productName,
+            image: product.productImage,
+            amount: product.amount,
+            startDate: product.startDate,
+            endDate: product.endDate,
+          })),
+        },
+      ],
     });
   } else {
     res.status(404);
@@ -141,21 +149,6 @@ const getProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Get Product Profile
-// routes   GET /api/products/productProfile
-// @access  Private
-const getProductProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
-  const addProduct = await Product.find({ user: user._id });
-
-  if (addProduct && addProduct.length > 0) {
-    res.status(200).json({ status: 'Success', data: addProduct });
-  } else {
-    res.status(404);
-    throw new Error('Product not found');
-  }
-});
-
 // @desc    Update Product Profile
 // routes   PUT /api/products/:productId
 // @access  Private
@@ -186,6 +179,5 @@ module.exports = {
   getProduct,
   getUserProduct,
   addProduct,
-  getProductProfile,
   updateProductProfile,
 };
