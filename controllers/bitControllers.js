@@ -80,11 +80,56 @@ const userBitProducts = asyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'Success',
       statusCode: res.statusCode,
-      data: products,
+      data: [{ userBitAllProducts: products }],
     });
   } else {
     res.status(404);
     throw new Error('User bit products have not been found');
+  }
+});
+
+// @desc    Update Bid
+// routes   PUT /api/bits/:productId
+// @access  Private
+const updateBit = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+  const product = await Bit.findOne({
+    bitProduct: productId,
+    bitUser: req.user._id,
+  });
+
+  if (product) {
+    product.bitAmount = req.body.bitAmount || bitAmount;
+    await product.save();
+    res.status(200).json({
+      status: 'Success',
+      message: 'Bid Amount Update Successful',
+    });
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+});
+
+// @desc    Delete Bid
+// routes   DELETE /api/bits/:productId
+// @access  Private
+const deleteBid = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+  const product = await Bit.findOne({
+    bitProduct: productId,
+    bitUser: req.user._id,
+  });
+
+  if (product) {
+    await product.deleteOne();
+    res.status(200).json({
+      status: 'Success',
+      message: 'Bid Delete successful',
+    });
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
   }
 });
 
@@ -93,4 +138,6 @@ module.exports = {
   getAllBits,
   getBitProduct,
   userBitProducts,
+  updateBit,
+  deleteBid,
 };
