@@ -77,6 +77,30 @@ const getAllProducts = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get user products
+// routes   GET /api/products/user-products
+// @access  Private
+const getUserProduct = asyncHandler(async (req, res) => {
+  const userProduct = await Product.find({ user: req.user._id });
+  if (userProduct) {
+    res.status(200).json({
+      status: 'Success',
+      statusCode: res.statusCode,
+      data: userProduct.map((product) => ({
+        productId: product._id,
+        productName: product.productName,
+        image: product.productImage,
+        amount: product.amount,
+        startDate: product.startDate,
+        endDate: product.endDate,
+      })),
+    });
+  } else {
+    res.status(404);
+    throw new Error('User products have not found');
+  }
+});
+
 // @desc    Get Single product & Seller details
 // routes   GET /api/products/:productId
 // @access  Public
@@ -92,6 +116,7 @@ const getProduct = asyncHandler(async (req, res) => {
           ProductDetails: [
             {
               productName: product.productName,
+              productAmount: product.amount,
               location: product.location,
               startDate: product.startDate,
               endDate: product.endDate,
@@ -159,6 +184,7 @@ const updateProductProfile = asyncHandler(async (req, res) => {
 module.exports = {
   getAllProducts,
   getProduct,
+  getUserProduct,
   addProduct,
   getProductProfile,
   updateProductProfile,
