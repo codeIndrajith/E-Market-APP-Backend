@@ -67,7 +67,7 @@ const getBitProduct = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error('Bit product not found');
+    throw new Error('There are not bids this product');
   }
 });
 
@@ -123,7 +123,7 @@ const updateBit = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error('Product not found');
+    throw new Error('Updated product not found');
   }
 });
 
@@ -145,7 +145,7 @@ const deleteBid = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error('Product not found');
+    throw new Error('Bid details not found');
   }
 });
 

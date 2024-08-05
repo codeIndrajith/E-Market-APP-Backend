@@ -42,7 +42,6 @@ const addProduct = asyncHandler(async (req, res) => {
   });
   if (addedProduct) {
     res.status(200).json({
-      statusCode: res.statusCode,
       status: 'Success',
       message: 'Product add successful',
     });

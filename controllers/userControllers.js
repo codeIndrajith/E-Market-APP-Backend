@@ -162,7 +162,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Get users to bit single product
+// @desc    Get users to bit single product after sorting
 // routes   GET /api/users/:productId
 // @access  Public
 const getBitProductUsers = asyncHandler(async (req, res) => {
@@ -179,6 +179,8 @@ const getBitProductUsers = asyncHandler(async (req, res) => {
     bitProduct.find((item) => item.bitAmount === amount)
   );
 
+  console.log(sortedList);
+
   if (sortedList) {
     res.status(201).json({
       status: 'Success',
@@ -186,6 +188,8 @@ const getBitProductUsers = asyncHandler(async (req, res) => {
         {
           sortedListDetails: sortedList.map((list) => ({
             bidId: list._id,
+            productId: list.bitProduct,
+            bidUserName: list.bitUsername,
             bidAmount: list.bitAmount,
             bidUser: list.bitUser,
             profileImage: list.bitUserprofileImage,
