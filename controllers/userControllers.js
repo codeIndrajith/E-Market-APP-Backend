@@ -182,7 +182,7 @@ const getBitProductUsers = asyncHandler(async (req, res) => {
   console.log(sortedList);
 
   if (sortedList) {
-    res.status(201).json({
+    res.status(200).json({
       status: 'Success',
       data: [
         {

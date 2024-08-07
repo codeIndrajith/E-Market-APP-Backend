@@ -36,7 +36,7 @@ const bitProductByUser = asyncHandler(async (req, res) => {
 const getAllBits = asyncHandler(async (req, res) => {
   const bits = await Bit.find({});
   if (bits && bits.length > 0) {
-    res.status(201).json({
+    res.status(200).json({
       status: 'Success',
       data: bits,
     });

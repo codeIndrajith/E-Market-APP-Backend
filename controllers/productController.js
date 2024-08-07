@@ -41,7 +41,7 @@ const addProduct = asyncHandler(async (req, res) => {
     user: req.user._id,
   });
   if (addedProduct) {
-    res.status(200).json({
+    res.status(201).json({
       status: 'Success',
       message: 'Product add successful',
     });
@@ -117,7 +117,7 @@ const getProduct = asyncHandler(async (req, res) => {
   if (productId) {
     const product = await Product.findById({ _id: productId });
     if (product) {
-      res.status(201).json({
+      res.status(200).json({
         status: 'Success',
         data: {
           ProductDetails: [
