@@ -56,14 +56,12 @@ const getBitProduct = asyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'Success',
       statusCode: res.statusCode,
-      data: [
-        {
-          bidDetails: bitProduct.map((bitProd) => ({
-            bidId: bitProd._id,
-            bitAmount: bitProd.bitAmount,
-          })),
-        },
-      ],
+      data: {
+        bidDetails: bitProduct.map((bitProd) => ({
+          bidId: bitProd._id,
+          bitAmount: bitProd.bitAmount,
+        })),
+      },
     });
   } else {
     res.status(404);
@@ -96,7 +94,7 @@ const userBitProducts = asyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'Success',
       statusCode: res.statusCode,
-      data: [{ userBitAllProducts: products }],
+      data: { userBitAllProducts: products },
     });
   } else {
     res.status(404);

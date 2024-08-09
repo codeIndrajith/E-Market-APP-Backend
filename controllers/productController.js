@@ -60,19 +60,17 @@ const getAllProducts = asyncHandler(async (req, res) => {
   if (products && products.length > 0) {
     res.status(200).json({
       status: 'Success',
-      data: [
-        {
-          AllProducts: products.map((product) => ({
-            productId: product._id,
-            productName: product.productName,
-            productImage: product.productImage,
-            category: product.category,
-            amount: product.amount,
-            startDate: product.startDate,
-            endDate: product.endDate,
-          })),
-        },
-      ],
+      data: {
+        allProducts: products.map((product) => ({
+          productId: product._id,
+          productName: product.productName,
+          productImage: product.productImage,
+          category: product.category,
+          amount: product.amount,
+          startDate: product.startDate,
+          endDate: product.endDate,
+        })),
+      },
     });
   } else {
     res.status(404);
@@ -89,18 +87,16 @@ const getUserProduct = asyncHandler(async (req, res) => {
     res.status(200).json({
       status: 'Success',
       statusCode: res.statusCode,
-      data: [
-        {
-          myProducts: userProduct.map((product) => ({
-            productId: product._id,
-            productName: product.productName,
-            image: product.productImage,
-            amount: product.amount,
-            startDate: product.startDate,
-            endDate: product.endDate,
-          })),
-        },
-      ],
+      data: {
+        myProducts: userProduct.map((product) => ({
+          productId: product._id,
+          productName: product.productName,
+          image: product.productImage,
+          amount: product.amount,
+          startDate: product.startDate,
+          endDate: product.endDate,
+        })),
+      },
     });
   } else {
     res.status(404);
@@ -120,22 +116,19 @@ const getProduct = asyncHandler(async (req, res) => {
       res.status(200).json({
         status: 'Success',
         data: {
-          ProductDetails: [
-            {
-              productName: product.productName,
-              productAmount: product.amount,
-              location: product.location,
-              startDate: product.startDate,
-              endDate: product.endDate,
-            },
-          ],
-          SellerDetails: [
-            {
-              sellerName: product.seller[0].name,
-              sellerContactNumber: product.seller[0].contactNumber,
-              sellerLocation: product.seller[0].location,
-            },
-          ],
+          productDetails: {
+            productName: product.productName,
+            productAmount: product.amount,
+            location: product.location,
+            startDate: product.startDate,
+            endDate: product.endDate,
+          },
+
+          sellerDetails: {
+            sellerName: product.seller[0].name,
+            sellerContactNumber: product.seller[0].contactNumber,
+            sellerLocation: product.seller[0].location,
+          },
         },
       });
     } else {

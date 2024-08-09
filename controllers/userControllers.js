@@ -184,18 +184,16 @@ const getBitProductUsers = asyncHandler(async (req, res) => {
   if (sortedList) {
     res.status(200).json({
       status: 'Success',
-      data: [
-        {
-          sortedListDetails: sortedList.map((list) => ({
-            bidId: list._id,
-            productId: list.bitProduct,
-            bidUserName: list.bitUsername,
-            bidAmount: list.bitAmount,
-            bidUser: list.bitUser,
-            profileImage: list.bitUserprofileImage,
-          })),
-        },
-      ],
+      data: {
+        sortedListDetails: sortedList.map((list) => ({
+          bidId: list._id,
+          productId: list.bitProduct,
+          bidUserName: list.bitUsername,
+          bidAmount: list.bitAmount,
+          bidUser: list.bitUser,
+          profileImage: list.bitUserprofileImage,
+        })),
+      },
     });
   } else {
     res.status(404);
