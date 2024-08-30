@@ -13,6 +13,7 @@ const addProduct = asyncHandler(async (req, res) => {
   if (sellerDetails) {
     const { firstName, lastName, contactNumber, city } = sellerDetails;
     seller = {
+      sellerId: req.user._id,
       name: `${firstName} ${lastName}`,
       contactNumber,
       location: city,
@@ -125,6 +126,7 @@ const getProduct = asyncHandler(async (req, res) => {
           },
 
           sellerDetails: {
+            sellerId: product.seller[0].sellerId,
             sellerName: product.seller[0].name,
             sellerContactNumber: product.seller[0].contactNumber,
             sellerLocation: product.seller[0].location,

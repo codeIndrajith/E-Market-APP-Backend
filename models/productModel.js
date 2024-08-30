@@ -44,6 +44,10 @@ const productSchema = mongoose.Schema(
     },
     seller: [
       {
+        sellerId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
         name: {
           type: String,
         },

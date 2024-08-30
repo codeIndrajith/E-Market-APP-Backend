@@ -58,6 +58,7 @@ const getBitProduct = asyncHandler(async (req, res) => {
       statusCode: res.statusCode,
       data: {
         bidDetails: bitProduct.map((bitProd) => ({
+          bidUser: bitProd.bitUsername,
           bidId: bitProd._id,
           bitAmount: bitProd.bitAmount,
         })),
