@@ -15,13 +15,23 @@ const bitProductByUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('Bit amount need to be less than RS.30030.00');
   } else {
-    const addedBitAmount = await Bit.create({
-      bitAmount,
-      bitProduct: productId,
+    const existBid = await Bit.findOne({
       bitUser: req.user._id,
-      bitUsername: req.user.firstName + ' ' + req.user.lastName,
-      bitUserprofileImage: req.user.profileImage,
+      bitProduct: productId,
     });
+
+    if (existBid) {
+      existBid.bitAmount = bitAmount;
+      await existBid.save();
+    } else {
+      const addedBitAmount = await Bit.create({
+        bitAmount,
+        bitProduct: productId,
+        bitUser: req.user._id,
+        bitUsername: req.user.firstName + ' ' + req.user.lastName,
+        bitUserprofileImage: req.user.profileImage,
+      });
+    }
     res.status(201).json({
       status: 'Success',
       statusCode: res.statusCode,
