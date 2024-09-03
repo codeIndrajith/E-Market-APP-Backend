@@ -98,6 +98,22 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get All user
+// routes   GET /api/users
+// @access  Public
+const getAllUsers = asyncHandler(async (req, res) => {
+  const allUsers = await User.find({});
+  if (allUsers) {
+    res.status(200).json({
+      status: 'Success',
+      data: allUsers,
+    });
+  } else {
+    res.status(404);
+    throw new Error('Users not found');
+  }
+});
+
 // @desc    Logout user
 // routes   POST /api/users/logout
 // @access  Public
@@ -204,6 +220,7 @@ const getBitProductUsers = asyncHandler(async (req, res) => {
 module.exports = {
   registerUser,
   authUser,
+  getAllUsers,
   logoutUser,
   getUserProfile,
   updateUserProfile,

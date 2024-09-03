@@ -91,6 +91,7 @@ const getUserProduct = asyncHandler(async (req, res) => {
       data: {
         myProducts: userProduct.map((product) => ({
           productId: product._id,
+          category: product.category,
           productName: product.productName,
           image: product.productImage,
           amount: product.amount,
