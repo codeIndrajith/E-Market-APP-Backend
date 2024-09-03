@@ -144,8 +144,11 @@ const getUserProfile = asyncHandler(async (req, res) => {
     statusCode: res.statusCode,
     data: {
       userId: req.user._id,
-      userName: req.user.firstName + ' ' + req.user.lastName,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
       userEmail: req.user.userEmail,
+      contactNumber: req.user.contactNumber,
+      city: req.user.city,
     },
   });
 });
