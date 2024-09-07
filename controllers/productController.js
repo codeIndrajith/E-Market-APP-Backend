@@ -121,6 +121,7 @@ const getProduct = asyncHandler(async (req, res) => {
           productDetails: {
             productName: product.productName,
             productAmount: product.amount,
+            productImage: product.productImage,
             location: product.location,
             startDate: product.startDate,
             endDate: product.endDate,
