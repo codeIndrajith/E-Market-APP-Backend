@@ -6,12 +6,14 @@ const {
   addProduct,
   updateProductProfile,
   getUserProduct,
+  deleteProduct,
 } = require('../controllers/productController');
 const router = express.Router();
 
 router.get('/', getAllProducts);
 router.get('/user-products', protect, getUserProduct);
 router.put('/:productId', protect, updateProductProfile);
+router.delete('/:productId', protect, deleteProduct);
 router.get('/:productId', getProduct);
 router.post('/', protect, addProduct);
 

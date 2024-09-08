@@ -170,10 +170,27 @@ const updateProductProfile = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Delete Product Profile
+// routes   DELETE /api/products/:productId
+// @access  Private
+const deleteProduct = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+  const product = await Product.findById(productId);
+
+  if (product) {
+    await Product.deleteOne({ _id: productId });
+    res.status(200).json({ status: 'Success', message: 'Product Deleted' });
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+});
+
 module.exports = {
   getAllProducts,
   getProduct,
   getUserProduct,
   addProduct,
   updateProductProfile,
+  deleteProduct,
 };
