@@ -91,6 +91,7 @@ const userBitProducts = asyncHandler(async (req, res) => {
       products.push({
         productId: foundProduct._id,
         productName: foundProduct.productName,
+        bidAmount: product.bitAmount,
         image: foundProduct.productImage,
         amount: foundProduct.amount,
         startDate: foundProduct.startDate,
