@@ -23,9 +23,9 @@ app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/bits', bitRoutes);
 
-app.use('/', (req, res) => {
-  res.send('Server is running');
-});
+// app.use('/', (req, res) => {
+//   res.send('Server is running');
+// });
 
 app.use(notFound);
 app.use(errorHandler);

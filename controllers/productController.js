@@ -145,6 +145,46 @@ const getProduct = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get Winner Product details with seller details
+// routes   GET /api/products/winProductDetails:productId
+// @access  Public
+const getWinProductDetails = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+
+  if (productId) {
+    const product = await Product.findById({ _id: productId });
+    if (product) {
+      res.status(200).json({
+        status: 'Success',
+        data: {
+          productDetails: {
+            productId: product._id,
+            productName: product.productName,
+            productAmount: product.amount,
+            productImage: product.productImage,
+            location: product.location,
+            startDate: product.startDate,
+            endDate: product.endDate,
+          },
+
+          sellerDetails: {
+            sellerId: product.seller[0].sellerId,
+            sellerName: product.seller[0].name,
+            sellerContactNumber: product.seller[0].contactNumber,
+            sellerLocation: product.seller[0].location,
+          },
+        },
+      });
+    } else {
+      res.status(404);
+      throw new Error('Product is not available');
+    }
+  } else {
+    res.status(400);
+    throw new Error('Product id is required');
+  }
+});
+
 // @desc    Update Product Profile
 // routes   PUT /api/products/:productId
 // @access  Private
@@ -190,6 +230,7 @@ module.exports = {
   getAllProducts,
   getProduct,
   getUserProduct,
+  getWinProductDetails,
   addProduct,
   updateProductProfile,
   deleteProduct,
