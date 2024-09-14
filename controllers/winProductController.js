@@ -43,7 +43,27 @@ const deleteWinProductDetails = asyncHandler(async (req, res) => {
     await winProDetails.deleteOne();
     res.status(200).json({
       success: true,
-      mgs: 'Deleted success',
+      msg: 'Deleted success',
+    });
+  } else {
+    res.status(404);
+    throw new Error('Win product not found');
+  }
+});
+
+// @desc        Update inProgress value
+// @method      PUT /api/winProduct/update/inProgress/:id
+// @access      Public
+const updateInProgressValue = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  const { inProgress } = req.body;
+  const winProDetails = await WinProductModel.findOne({ _id: id });
+  if (winProDetails) {
+    winProDetails.inProgress = inProgress;
+    await winProDetails.save();
+    res.status(200).json({
+      success: true,
+      msg: 'inProgress updated',
     });
   } else {
     res.status(404);
@@ -55,4 +75,5 @@ module.exports = {
   addWinProductDetails,
   getWinProductDetails,
   deleteWinProductDetails,
+  updateInProgressValue,
 };

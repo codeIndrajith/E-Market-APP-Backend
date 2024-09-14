@@ -41,9 +41,9 @@ const winProductSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  status: {
+  inProgress: {
     type: Boolean,
-    default: false,
+    required: true,
   },
 });
 
