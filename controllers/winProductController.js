@@ -33,6 +33,23 @@ const getWinProductDetails = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc        Get win produc details
+// @method      GET /api/winProduct/getOne/details/:id
+// @access      Public
+const getOneWinProDetails = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  const winProDetails = await WinProductModel.findOne({ _id: id });
+  if (winProDetails) {
+    res.status(200).json({
+      success: true,
+      data: winProDetails,
+    });
+  } else {
+    res.status(404);
+    throw new Error('Win product not found');
+  }
+});
+
 // @desc        Delete win product details
 // @method      DELETE /api/winProduct/delete/details/:id
 // @access      Public
@@ -74,6 +91,7 @@ const updateInProgressValue = asyncHandler(async (req, res) => {
 module.exports = {
   addWinProductDetails,
   getWinProductDetails,
+  getOneWinProDetails,
   deleteWinProductDetails,
   updateInProgressValue,
 };
