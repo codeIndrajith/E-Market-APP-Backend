@@ -187,6 +187,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 const getBitProductUsers = asyncHandler(async (req, res) => {
   const { productId } = req.params;
   let allBidAmounts = [];
+  let bidUserAllDetails = [];
 
   const bitProduct = await Bit.find({ bitProduct: productId });
   if (bitProduct && bitProduct.length > 0) {
@@ -198,16 +199,24 @@ const getBitProductUsers = asyncHandler(async (req, res) => {
     bitProduct.find((item) => item.bitAmount === amount)
   );
 
-  console.log(sortedList);
+  // fetch bid user details
+  for (let i = 0; i < sortedList.length; i++) {
+    bidUserAllDetails[i] = await User.findOne({ _id: sortedList[i].bitUser });
+  }
+
+  // console.log(bidUserAllDetails);
 
   if (sortedList) {
     res.status(200).json({
       status: 'Success',
       data: {
-        sortedListDetails: sortedList.map((list) => ({
+        sortedListDetails: sortedList.map((list, index) => ({
           bidId: list._id,
           productId: list.bitProduct,
           bidUserName: list.bitUsername,
+          bidUserEmail: bidUserAllDetails[index].userEmail,
+          bidUserContactNumber: bidUserAllDetails[index].contactNumber,
+          bidUserLocation: bidUserAllDetails[index].city,
           bidAmount: list.bitAmount,
           bidUser: list.bitUser,
           profileImage: list.bitUserprofileImage,
