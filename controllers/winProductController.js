@@ -18,22 +18,23 @@ const addWinProductDetails = asyncHandler(async (req, res) => {
 });
 
 // @desc        Get win product details
-// @method      GET /api/winProduct/get/details
+// @method      GET /api/winProduct/get/details/:winUserId
 // @access      Public
 const getWinProductDetails = asyncHandler(async (req, res) => {
-  let winProDetails = await WinProductModel.find({}).lean();
+  const { userId } = req.params;
+  let winProDetails = await WinProductModel.find({ winUserId: userId });
 
-  if (winProDetails && winProDetails.length > 0) {
-    // Map through the result to rename _id to productId
-    winProDetails = winProDetails.map((product) => ({
-      ...product,
-      productId: product._id, // Rename _id to productId
-      _id: undefined, // Remove the _id field
-    }));
+  if (winProDetails) {
+    const modifiedWinProDetails = winProDetails.map((product) => {
+      const productObj = product.toObject();
+      productObj.id = productObj._id;
+      delete productObj._id;
+      return productObj;
+    });
 
     res.status(200).json({
       success: true,
-      data: winProDetails,
+      data: modifiedWinProDetails,
     });
   } else {
     res.status(404);

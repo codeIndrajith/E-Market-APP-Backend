@@ -17,6 +17,10 @@ const winProductSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  winUserId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   startDate: {
     type: Date,
     required: true,

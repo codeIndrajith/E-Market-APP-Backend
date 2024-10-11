@@ -9,7 +9,7 @@ const {
 const router = express.Router();
 
 router.post('/add/details', addWinProductDetails);
-router.get('/get/details', getWinProductDetails);
+router.get('/get/details/:userId', getWinProductDetails);
 router.get('/getOne/details/:id', getOneWinProDetails);
 router.delete('/delete/details/:id', deleteWinProductDetails);
 router.put('/update/inProgress/:id', updateInProgressValue);
