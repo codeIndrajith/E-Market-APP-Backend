@@ -11,7 +11,7 @@ const checkoutSchema = mongoose.Schema(
       required: true,
     },
     expireDate: {
-      type: Date,
+      type: String,
       required: true,
     },
     CVV: {

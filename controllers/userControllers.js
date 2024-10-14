@@ -146,6 +146,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       userId: req.user._id,
       firstName: req.user.firstName,
       lastName: req.user.lastName,
+      profileImage: req.user.profileImage,
       userEmail: req.user.userEmail,
       contactNumber: req.user.contactNumber,
       city: req.user.city,
@@ -163,6 +164,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     user.firstName = req.body.firstName || user.firstName;
     user.lastName = req.body.lastName || user.lastName;
     user.userEmail = req.body.userEmail || user.userEmail;
+    user.profileImage = req.body.profileImage || user.profileImage;
     user.contactNumber = req.body.contactNumber || user.contactNumber;
     user.city = req.body.city || user.city;
 
